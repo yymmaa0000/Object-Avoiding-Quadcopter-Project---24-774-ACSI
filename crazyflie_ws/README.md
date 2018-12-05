@@ -127,7 +127,10 @@ The Optitrack computer IP address is set to `10.0.0.2`. You can check if the two
 
 After you terminate the process, the data will be saved in `home/.ros/optitrack_position` and `home/.ros/optitrack_orientation`
 
+## Usage
 
-Now you are all set!
-Have fun with your project! 
+Start by modifying the ros package `crazyflie_ws/src/crazyflie_ros/crazyflie_demo/`
+You should be able to find code demonstrating how to read from sensors and actuate motors.
+Good luck!
+
 
