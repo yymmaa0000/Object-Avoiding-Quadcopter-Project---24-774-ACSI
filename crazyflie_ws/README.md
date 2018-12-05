@@ -2,11 +2,7 @@
 
 Author: Wooshik Kim & Austin Wang, TA for ACSI
 
-Last edited: 10/26/2018 
-
-## Note to ACSI 2018 Students!!
-
-I already set up the lab computer for instructor user! So you can try "Test the Environment" and "Connecting with Optitrack" right away. Skip "Setup Instructions". However, that computer is there to serve as a reference. It is not answer to everything. It still lacks many things. It just provides the bare minimum of this project. This guide is just here to tell you what are needed and to provide big picture of things. In the end YOU have to integrate the systems on your own. 
+Last edited: 12/05/2018 
 
 ## Synopsis
 
@@ -29,7 +25,7 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 
 ## Setup Instructions
 
-### Setup environment in Ubuntu 14.04 or 16.04
+### Setting up the environment in Ubuntu 16.04
 
 1) Clone repo
 	```
@@ -81,7 +77,7 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 	source ~/.bashrc
 	```
 
-### Test the environment
+### Testing the environment
 
 "Hello World!" Let's fly the drone using Xbox controller. This would be a good way to check if everything is working fine. 
 Connect Crazyradio PA to your computer and open terminal. 
