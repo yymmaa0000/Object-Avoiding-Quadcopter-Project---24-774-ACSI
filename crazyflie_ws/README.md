@@ -1,6 +1,6 @@
 # Crazyflie Project Environment
 
-Author: Wooshik Kim & Austin Wang, TA for ACSI
+Author: Wooshik Kim & Austin Wang, TAs of ACSI
 
 Last edited: 12/05/2018 
 
@@ -103,7 +103,7 @@ roslaunch crazyflie_demo teleop_xbox360.launch
 ```
 and you should be able to fly your drone! 
 
-Reference: Section 3 of droneWriteUp.pdf 
+Reference: Section 3 of **droneWriteUp.pdf**
 
 
 ### Connecting with Optitrack
