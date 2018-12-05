@@ -130,7 +130,9 @@ After you terminate the process, the data will be saved in `home/.ros/optitrack_
 ## Usage
 
 Start by modifying the ros package `crazyflie_ws/src/crazyflie_ros/crazyflie_demo/`
+
 You should be able to find code demonstrating how to read from sensors and actuate motors.
+
 Good luck!
 
 
