@@ -14,51 +14,37 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 
 ### Requirements
 
-Ubuntu 16.04 
+- Ubuntu 16.04 
 
-Ubuntu setup instructions: https://tutorials.ubuntu.com/tutorial/tutorial-install-ubuntu-desktop-1604#4 
+	Setup instructions: https://tutorials.ubuntu.com/tutorial/tutorial-install-ubuntu-desktop-1604#4 
+
+- ROS Kinetic
+
+	Setup instructions: http://wiki.ros.org/kinetic/Installation/Ubuntu 
+	
+- DKMS
+	```
+	sudo apt-get install dkms
+	```
 
 ## Setup Instructions
 
 ### Setup environment in Ubuntu 14.04 or 16.04
 
-1) Install Ubuntu 16.04
-	
-	https://tutorials.ubuntu.com/tutorial/tutorial-install-ubuntu-desktop-1604#0 
+1) Clone repo
+	```
+	git clone https://github.com/CMU-ACSI/CrazyFlie.git
+	```
 
-2) Clone Peter's repo
-	
-	Peter Jan was previously a TA for the ACSI course. The repository contains Crazyflie
-	firmware, Optitrack python code, along with other things
+2) Make crazyflie_ws
 	```
-	git clone https://github.com/Peter-Jan/crazyflie_ws.git
-	```
-	
-	From this point on we are going through install.sh
-	You can simply do cd crazyflie_ws `chmod +x install.sh  ./install.sh`
-	However since some are out of date I will provide a step by step guide below
-
-3) Install ROS, update rosdep, source bash to use from terminal, and make crazyflie_ws
-	Kinetic
-	```
-	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-	sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
-	sudo apt-get update
-	sudo apt-get install ros-kinetic-desktop-full
-	sudo rosdep init
-	rosdep update
-	source /opt/ros/kinetic/setup.bash
-	sudo apt-get install python-rosinstall
-	cd crazyflie_ws
+	cd CrazyFlie/crazyflie_ws
 	rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 	catkin_make
-	source ~/crazyflie_ws/devel/setup.bash
-	sudo apt-get install dkms
+	source devel/setup.bash
 	```
-	
-	Reference: http://wiki.ros.org/kinetic/Installation/Ubuntu 
 
-4) Driver for Linux xpad controllercd crazyflie_ws 
+3) Driver for Linux xpad controller 
 	```
 	cd ..
 	sudo git clone https://github.com/paroj/xpad.git /usr/src/xpad-0.4
@@ -84,8 +70,7 @@ Ubuntu setup instructions: https://tutorials.ubuntu.com/tutorial/tutorial-instal
 	```
 	Reference: https://github.com/bitcraze/crazyflie-lib-python#setting-udev-permissions
 
-5) Optitrack library from optirx, python based ROS examples are here
-	Kinetic
+4) Optitrack library from optirx, python based ROS examples are here
 	```
 	cd ~/crazyflie_ws
 	sudo cp optirx.py /usr/lib/python3.5/  
