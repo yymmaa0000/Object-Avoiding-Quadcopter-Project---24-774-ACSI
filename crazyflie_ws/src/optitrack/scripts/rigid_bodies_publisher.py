@@ -78,6 +78,7 @@ class RigidBodiesPublisher(object):
           return
         else:
           rospy.logwarn('Failed to receive packet from optitrack')
+      # packet has all the information from Optitrack! 
       msgtype, packet = rx.unpack(data, version=version)
 
       if type(packet) is rx.SenderData:
@@ -91,10 +92,14 @@ class RigidBodiesPublisher(object):
           # IPython.embed()
           for i, rigid_body in enumerate(packet.rigid_bodies):
             body_id = rigid_body.id
+            # get position and orientation from rigid_body (which was from packet)
             pos_opt = np.array(rigid_body.position)
             rot_opt = np.array(rigid_body.orientation)
+            # 4x4 homogenous matrix for doing local -> global coordinate transformation
+            # ex) [1 0 0 x;0 1 0 y;0 0 1 z;0 0 0 1] homo_mat that only translates x,y,z 
             oTr = PoseConv.to_homo_mat(pos_opt, rot_opt)
             # Transformation between world frame and the rigid body
+            # if you want different coordinate frame Change wTo 
             wTr = np.dot(wTo, oTr)
             array_msg.header.stamp = rospy.Time.now()
             array_msg.header.frame_id = parent_frame
@@ -119,6 +124,7 @@ class RigidBodiesPublisher(object):
               tf_broadcaster.sendTransform(pos_opt, rot_opt, rospy.Time.now(), body_name, optitrack_frame)
               prevtime[body_id] = rospy.get_time()
 
+        # Append to file "optitrack_position" the positions of body 
         logFile = open("optitrack_position","a")
         strX = str(array_msg.bodies[0].pose.position.x).decode('utf-8')
         strX = strX[2:-2]
@@ -135,6 +141,8 @@ class RigidBodiesPublisher(object):
         logFile.close()
         pose_pub.publish(array_msg)
 
+        # Also to see what is happening at the terminal,
+        # print to terminal as well 
         try: 
           fltX = float(strX)
           fltY = float(strY)
@@ -143,7 +151,7 @@ class RigidBodiesPublisher(object):
         except:
           rospy.logwarn('didn\'t read correctly')
         
-
+        # Append to file "optitrack_orientation" the orientations of body
         logFile = open("optitrack_orientation","a")
         q1 = str(array_msg.bodies[0].pose.orientation.x).decode('utf-8')
         q1 = q1[2:-2]
