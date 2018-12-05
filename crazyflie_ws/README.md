@@ -22,7 +22,7 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 
 	Setup instructions: http://wiki.ros.org/kinetic/Installation/Ubuntu 
 	
-- DKMS
+- Dynamic Kernel Module Support
 	```
 	sudo apt-get install dkms
 	```
@@ -72,12 +72,12 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 
 4) Optitrack library from optirx, python based ROS examples are here
 	```
-	cd ~/crazyflie_ws
+	cd (path-to-CrazyFlie)/crazyflie_ws
 	sudo cp optirx.py /usr/lib/python3.5/  
 	sudo cp optirx.py /usr/local/lib/python2.7/dist-packages/
 	sudo cp optirx.py /usr/local/lib/python2.7/site-packages/
 	echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
-	echo "source ~/crazyflie_ws/devel/setup.bash" >> ~/.bashrc
+	echo "source (path-to-CrazyFlie)/crazyflie_ws/devel/setup.bash" >> ~/.bashrc
 	source ~/.bashrc
 	```
 
@@ -86,7 +86,7 @@ ROS environment capable of interfacing with Crazyflie 2.0 and OptiTrack motion c
 "Hello World!" Let's fly the drone using Xbox controller. This would be a good way to check if everything is working fine. 
 Connect Crazyradio PA to your computer and open terminal. 
 ```
-cd crazyflie_ws
+cd (path-to-CrazyFlie)/crazyflie_ws
 roscore
 ```
 
