@@ -1,0 +1,23 @@
+in ~/crazyflie_ws:
+
+	source devel/setup.bash
+	roslaunch optitrack optitrack_pipeline.launch
+	roslaunch /home/acsi-mlc/Team3/crazyflie_ws/src/optitrack/launch/optitrack_pipeline.launch
+
+	//roslaunch crazyflie_demo basic_hover.launch
+
+	source devel/setup.bash
+	roslaunch crazyflie_demo teleop_xbox360.launch
+	roslaunch /home/acsi-mlc/Team3/crazyflie_ws/src/crazyflie_ros/crazyflie_demo/launch/teleop_xbox360.launch
+
+
+in ~/Team3$
+source crazyflie_ws/devel/setup.bash
+python2 controller.py
+
+
+
+
+Kp = [10.0,-10.0,30000.0]
+Kd = [50.0,-50.0,30000.0]
+Ki = [2.0,-2.0,0.0]
