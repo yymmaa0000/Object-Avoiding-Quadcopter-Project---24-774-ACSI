@@ -85,10 +85,10 @@ def plan(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_x_prev,ball_y_prev,ba
         d = distance(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future)
         
         if d > detect_radius: break
-        if d <= (r_drone+r_ball): return dodge3D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
+        if d <= (r_drone+r_ball): return dodge2D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
         t += time_step
         
-    return drone_x,drone_y,drone_z
+    return [drone_x,drone_y,drone_z]
 
 
 if __name__ == "__main__":
