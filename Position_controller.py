@@ -34,7 +34,6 @@ def calculateXYerror(targetX,targetY,DroneX,DroneY,DroneYaw):
 def ControlOutput(desired_location,cflPose,dt):
 	x,y,z,roll,pitch,yaw = utility_function.GetPositionInfo(cflPose)
 
-	print("=======================================================================================")
 	print("Position X = ", x)
 	print("Position Y = ", y)
 	print("Position Z = ", z)
@@ -71,7 +70,8 @@ def ControlOutput(desired_location,cflPose,dt):
 	joyCommand_linear_y = min(30,joyCommand_linear_y)
 	joyCommand_linear_y = max(-30,joyCommand_linear_y)
 	joyCommand_linear_z = min(60000,joyCommand_linear_z)
-	joyCommand_linear_z = max(Hover_Speed,joyCommand_linear_z)
+	#joyCommand_linear_z = max(Hover_Speed,joyCommand_linear_z)
+	joyCommand_linear_z = max(0,joyCommand_linear_z)
 
 	print("Error X: ",error[0]," Error Y: ",error[1]," Error Z: ",error[2])
 	print("Joy command X: ",joyCommand_linear_x," Joy command Y: ",joyCommand_linear_y," Joy command Z: ",joyCommand_linear_z)
