@@ -30,6 +30,7 @@ def time_passed():
 
 def take_off():
 	global pub, joyCommand
+	Hover_Speed = 33000.0
 	take_off_time = 2.0
 	start = time.time()
 
@@ -54,19 +55,19 @@ def land():
 
 
 def optitrackCallback(data):
-	global pub, joyCommand, rate
+	global pub, joyCommand, rate, Skip_this_time,desired_location,dt
 
 	if Skip_this_time:
 		Skip_this_time = False
 		return
 	else: Skip_this_time = True
 
-	if (time.time()-start <= 2): 
+	if (time_passed() <= 2): 
 		take_off()
 		return
-	elif (15 >= time.time()-start >= 10):  desired_location  = desired_location2
-	elif (20 >= time.time()-start >= 15):  desired_location  = desired_location3
-	elif (time.time()-start >= 25): 
+	elif (15 >= time_passed() >= 10):  desired_location  = desired_location2
+	elif (20 >= time_passed() >= 15):  desired_location  = desired_location3
+	elif (time_passed() >= 25): 
 		land()
 		return
 		
@@ -79,6 +80,8 @@ def optitrackCallback(data):
 	joyCommand.angular.x = controller_output[3]
 	joyCommand.angular.y = controller_output[4]
 	joyCommand.angular.z = controller_output[5]
+	
+	print(joyCommand.linear.z, "HOYAAAAAAAAAAAAAAAAAAAAA")
 	pub.publish(joyCommand)
 	rospy.loginfo("sent command")
 
