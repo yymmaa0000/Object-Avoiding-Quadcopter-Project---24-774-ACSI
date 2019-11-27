@@ -13,7 +13,7 @@ in ~/crazyflie_ws:
 
 in ~/Team3$
 source crazyflie_ws/devel/setup.bash
-python2 controller.py
+python2 main.py
 
 
 

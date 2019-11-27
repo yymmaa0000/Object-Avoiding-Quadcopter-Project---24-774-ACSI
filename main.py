@@ -19,13 +19,14 @@ import obstacle_avoidance_planner
 # warning, please make sure that the yaw angle measured from optitrack system
 # matches the yaw angle represented by the actual space!
 
-default_reference = [0.0,0.0,1.5]#x,y,z
+default_reference = [0.0,0.0,0.4]#x,y,z
 desired_location = default_reference
 
-# desired_location2 = [-1.0,1.0,1.5] #x,y,z
-# desired_location3 = [0.0,1.3,0.3] #x,y,z
+desired_location2 = [-1.0,1.0,1.5] #x,y,z
+desired_location3 = [0.0,1.3,0.3] #x,y,z
 
 start_time = time.time()
+last_time = time.time()
 
 Skip_this_time = True
 
@@ -65,16 +66,22 @@ def land():
 
 
 def optitrackCallback(data):
-	global pub, joyCommand, rate, Skip_this_time,desired_location,dt
+	global pub, joyCommand, rate, Skip_this_time,desired_location, last_time
 
 	if Skip_this_time:
 		Skip_this_time = False
 		return
 	else: Skip_this_time = True
 
+	curr_time = time.time()
+	if (curr_time-last_time) < dt: return
+	last_time = curr_time
+
+
 	if (time_passed() <= 2): 
 		take_off()
 		return
+
 	# elif (15 >= time_passed() >= 10):  desired_location  = desired_location2
 	# elif (20 >= time_passed() >= 15):  desired_location  = desired_location3
 	# elif (time_passed() >= 25): 
@@ -84,9 +91,15 @@ def optitrackCallback(data):
 	cflPose_drone = data.bodies[rigidBodyIdx_drone].pose
 	cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
 	
-	print("=======================================================================================")
-	desired_location = obstacle_avoidance_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
-	print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
+	# print("=======================================================================================")
+	# desired_location = obstacle_avoidance_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
+	# print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
+
+	# if (time_passed() > 10): 
+	# 	desired_location = [-0.5,0.5,1.5]
+	# else: desired_location = default_reference
+	# print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
+
 	controller_output = Position_controller.ControlOutput(desired_location,cflPose_drone,dt)
 	
 	joyCommand.linear.x = controller_output[0]
@@ -97,7 +110,7 @@ def optitrackCallback(data):
 	joyCommand.angular.z = controller_output[5]
 	
 	pub.publish(joyCommand)
-	rospy.loginfo("sent command")
+	# rospy.loginfo("sent command")
 
 
 rospy.init_node("control_crazyflie")

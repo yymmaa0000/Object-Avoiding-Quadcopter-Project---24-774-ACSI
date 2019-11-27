@@ -75,6 +75,8 @@ def dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_spee
 # cflPose_obstacle = rigit body data of the obstacle from optitrack
 # default_reference = [x,y,z] default reference position when the drone is safe
 def plan(cflPose_drone,cflPose_obstacle,default_reference):
+    global last_time,last_reference,prev_ball_location
+
     drone_location = utility_function.GetPositionInfo(cflPose_drone)
     drone_x = drone_location[0]
     drone_y = drone_location[1]
@@ -118,6 +120,7 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
             if distance(last_reference[0],last_reference[1],last_reference[2],ball_x_future,ball_y_future,ball_z_future) <= (r_drone+r_ball): 
                 new_reference = dodge2D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
                 last_reference = new_reference
+                print("new reference :", new_reference)
                 return new_reference
             else: return last_reference
         t += time_step
