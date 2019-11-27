@@ -89,15 +89,10 @@ def optitrackCallback(data):
 	# 	return
 		
 	cflPose_drone = data.bodies[rigidBodyIdx_drone].pose
-	cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
+	# cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
 	
 	# print("=======================================================================================")
 	# desired_location = obstacle_avoidance_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
-	# print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
-
-	# if (time_passed() > 10): 
-	# 	desired_location = [-0.5,0.5,1.5]
-	# else: desired_location = default_reference
 	# print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
 
 	controller_output = Position_controller.ControlOutput(desired_location,cflPose_drone,dt)

@@ -129,76 +129,76 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     return default_reference
 
 
-if __name__ == "__main__":
-    drone_x = 0
-    drone_y = 0
-    drone_z = 2
+# if __name__ == "__main__":
+#     drone_x = 0
+#     drone_y = 0
+#     drone_z = 2
     
-    ball_x = 2.05
-    ball_y = 1.95
-    ball_z = 1.5
+#     ball_x = 2.05
+#     ball_y = 1.95
+#     ball_z = 1.5
     
-    ball_x_prev = 3
-    ball_y_prev = 3
-    ball_z_prev = 1
+#     ball_x_prev = 3
+#     ball_y_prev = 3
+#     ball_z_prev = 1
     
-    dt = 0.1
+#     dt = 0.1
     
-    fig = plt.figure()
-    ax = plt.axes(projection="3d")
+#     fig = plt.figure()
+#     ax = plt.axes(projection="3d")
     
-    ax.scatter3D(drone_x, drone_y, drone_z,  c='b',label = "Drone original potition")
+#     ax.scatter3D(drone_x, drone_y, drone_z,  c='b',label = "Drone original potition")
     
-    x = [ball_x]
-    y = [ball_y]
-    z = [ball_z]
-    x_hit = []
-    y_hit = []
-    z_hit = []
-    ball_speed_x = (ball_x - ball_x_prev)/dt
-    ball_speed_y = (ball_y - ball_y_prev)/dt
-    ball_speed_z = (ball_z - ball_z_prev)/dt
-    t = 0
-    ball_x_future = ball_x
-    ball_y_future = ball_y
-    ball_z_future = ball_z
+#     x = [ball_x]
+#     y = [ball_y]
+#     z = [ball_z]
+#     x_hit = []
+#     y_hit = []
+#     z_hit = []
+#     ball_speed_x = (ball_x - ball_x_prev)/dt
+#     ball_speed_y = (ball_y - ball_y_prev)/dt
+#     ball_speed_z = (ball_z - ball_z_prev)/dt
+#     t = 0
+#     ball_x_future = ball_x
+#     ball_y_future = ball_y
+#     ball_z_future = ball_z
     
-    dodge = True
-    while t < predict_time:
-        ball_speed_z -= time_step*g
-        ball_x_future += ball_speed_x*time_step
-        ball_y_future += ball_speed_y*time_step
-        ball_z_future += ball_speed_z*time_step
+#     dodge = True
+#     while t < predict_time:
+#         ball_speed_z -= time_step*g
+#         ball_x_future += ball_speed_x*time_step
+#         ball_y_future += ball_speed_y*time_step
+#         ball_z_future += ball_speed_z*time_step
         
-        d = distance(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future)
-        if d > detect_radius: break
-        if d <= (r_drone+r_ball): 
-            x_hit.append(ball_x_future)
-            y_hit.append(ball_y_future)
-            z_hit.append(ball_z_future)
-            if dodge:
-                a,b,c = dodge3D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
-                ax.scatter3D(a,b,c,  c='y',label = "Drone position after dodging (3D)")
-                print("dodge3D: ",distance(drone_x,drone_y,drone_z,a,b,c))
+#         d = distance(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future)
+#         if d > detect_radius: break
+#         if d <= (r_drone+r_ball): 
+#             x_hit.append(ball_x_future)
+#             y_hit.append(ball_y_future)
+#             z_hit.append(ball_z_future)
+#             if dodge:
+#                 a,b,c = dodge3D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
+#                 ax.scatter3D(a,b,c,  c='y',label = "Drone position after dodging (3D)")
+#                 print("dodge3D: ",distance(drone_x,drone_y,drone_z,a,b,c))
                 
-                a,b,c = dodge2D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
-                ax.scatter3D(a,b,c,  c='g',label = "Drone position after dodging (2D)")
-                print("dodge2D: ",distance(drone_x,drone_y,drone_z,a,b,c))
+#                 a,b,c = dodge2D(drone_x,drone_y,drone_z,ball_x_future,ball_y_future,ball_z_future,ball_speed_x, ball_speed_y,ball_speed_z)
+#                 ax.scatter3D(a,b,c,  c='g',label = "Drone position after dodging (2D)")
+#                 print("dodge2D: ",distance(drone_x,drone_y,drone_z,a,b,c))
                 
-                dodge = False
+#                 dodge = False
         
-        x.append(ball_x_future)
-        y.append(ball_y_future)
-        z.append(ball_z_future)
-        t += time_step
+#         x.append(ball_x_future)
+#         y.append(ball_y_future)
+#         z.append(ball_z_future)
+#         t += time_step
     
-    ax.plot3D(x, y, z, 'black',label = "Predicted ball trajectory")
-    ax.plot3D(x_hit, y_hit, z_hit, 'red',label = "Collision region")
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z');
-    ax.set_xlim3d(-5, 5)
-    ax.set_ylim3d(-5,5)
-    ax.set_zlim3d(0,3)
-    plt.legend(loc=2)
-    plt.show()
+#     ax.plot3D(x, y, z, 'black',label = "Predicted ball trajectory")
+#     ax.plot3D(x_hit, y_hit, z_hit, 'red',label = "Collision region")
+#     ax.set_xlabel('x')
+#     ax.set_ylabel('y')
+#     ax.set_zlabel('z');
+#     ax.set_xlim3d(-5, 5)
+#     ax.set_ylim3d(-5,5)
+#     ax.set_zlim3d(0,3)
+#     plt.legend(loc=2)
+#     plt.show()
