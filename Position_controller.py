@@ -16,12 +16,12 @@ prev_error = [0.0,0.0,0.0]
 error_sum = [0.0,0.0,0.0]
 Hover_Speed = 33000.0
 
-# Kp = [10.0,10.0,30000.0]
-# Kd = [0.2,0.2,500.0]
-# Ki = [0.5,0.5,0.0]
 Kp = [10.0,10.0,30000.0]
-Kd = [50.0,50.0,30000.0]
-Ki = [2.0,2.0,0.0]
+Kd = [10.0,10.0,40000.0]
+Ki = [3.0,3.0,400.0]
+# Kp = [15.0,15.0,30000.0]
+# Kd = [55.0,55.0,40000.0]
+# Ki = [3.0,3.0,400.0]
 
 last_time = time.time()
 
@@ -78,13 +78,20 @@ def ControlOutput(desired_location,cflPose,dt):
 	for i in range(3):
 		prev_error[i] = error[i]
 	
-	joyCommand_linear_x = min(30,joyCommand_linear_x)
-	joyCommand_linear_x = max(-30,joyCommand_linear_x)
-	joyCommand_linear_y = min(30,joyCommand_linear_y)
-	joyCommand_linear_y = max(-30,joyCommand_linear_y)
+	# joyCommand_linear_x = min(30,joyCommand_linear_x)
+	# joyCommand_linear_x = max(-30,joyCommand_linear_x)
+	# joyCommand_linear_y = min(30,joyCommand_linear_y)
+	# joyCommand_linear_y = max(-30,joyCommand_linear_y)
+
+	joyCommand_linear_x = min(100,joyCommand_linear_x)
+	joyCommand_linear_x = max(-100,joyCommand_linear_x)
+	joyCommand_linear_y = min(100,joyCommand_linear_y)
+	joyCommand_linear_y = max(-100,joyCommand_linear_y)
+
 	joyCommand_linear_z = min(60000,joyCommand_linear_z)
 	#joyCommand_linear_z = max(Hover_Speed,joyCommand_linear_z)
 	joyCommand_linear_z = max(0,joyCommand_linear_z)
+
 
 	print("Error X: ",error[0]," Error Y: ",error[1]," Error Z: ",error[2])
 	print("Joy command X: ",joyCommand_linear_x," Joy command Y: ",joyCommand_linear_y," Joy command Z: ",joyCommand_linear_z)

@@ -16,8 +16,17 @@ source crazyflie_ws/devel/setup.bash
 python2 main.py
 
 
+# joyCommand_linear_x = min(30,joyCommand_linear_x)
+	# joyCommand_linear_x = max(-30,joyCommand_linear_x)
+	# joyCommand_linear_y = min(30,joyCommand_linear_y)
+	# joyCommand_linear_y = max(-30,joyCommand_linear_y)
+	
+very stable but slow
+Kp = [10.0,10.0,30000.0]
+Kd = [50.0,50.0,40000.0]
+Ki = [3.0,3.0,400.0]
 
-
-Kp = [10.0,-10.0,30000.0]
-Kd = [50.0,-50.0,30000.0]
-Ki = [2.0,-2.0,0.0]
+quick but less stable
+Kp = [15.0,15.0,30000.0]
+Kd = [55.0,55.0,40000.0]
+Ki = [3.0,3.0,400.0]

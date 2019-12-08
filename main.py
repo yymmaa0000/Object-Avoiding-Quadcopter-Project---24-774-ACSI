@@ -10,6 +10,7 @@ from optitrack.msg import RigidBodyArray
 import time
 import Position_controller
 import obstacle_avoidance_planner
+import obstacle_avoidance_planner2
 import simple_planner
 
 # linear x,y = [-30,30] 
@@ -20,7 +21,7 @@ import simple_planner
 # warning, please make sure that the yaw angle measured from optitrack system
 # matches the yaw angle represented by the actual space!
 
-default_reference = [0.0,0.0,0.4]#x,y,z
+default_reference = [0.0,0.0,1.5]#x,y,z
 desired_location = default_reference
 
 desired_location2 = [-1.0,1.0,1.5] #x,y,z
@@ -43,7 +44,7 @@ def time_passed():
 def take_off():
 	global pub, joyCommand
 	Hover_Speed = 33000.0
-	take_off_time = 2.0
+	take_off_time = 4.0
 	start = time.time()
 
 	while (time.time() - start < take_off_time):
@@ -74,14 +75,16 @@ def optitrackCallback(data):
 		return
 	else: Skip_this_time = True
 
-	curr_time = time.time()
-	if (curr_time-last_time) < dt: return
-	last_time = curr_time
+	# curr_time = time.time()
+	# if (curr_time-last_time) < dt: return
+	# last_time = curr_time
 
 
-	if (time_passed() <= 2): 
-		take_off()
-		return
+	# if (time_passed() <= 4): 
+	# 	take_off()
+	# 	return
+
+
 
 	# elif (15 >= time_passed() >= 10):  desired_location  = desired_location2
 	# elif (20 >= time_passed() >= 15):  desired_location  = desired_location3
@@ -90,11 +93,11 @@ def optitrackCallback(data):
 	# 	return
 		
 	cflPose_drone = data.bodies[rigidBodyIdx_drone].pose
-	# cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
+	cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
 	
 	print("=======================================================================================")
-	# desired_location = obstacle_avoidance_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
-	# desired_location = simple_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
+	# desired_location = obstacle_avoidance_planner2.plan(cflPose_drone,cflPose_obstacle,default_reference)
+	desired_location = simple_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
 	print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
 
 	controller_output = Position_controller.ControlOutput(desired_location,cflPose_drone,dt)
@@ -116,5 +119,5 @@ joyCommand = Twist()
 rate = rospy.Rate(frequency)
 rospy.Subscriber("/optitrack/rigid_bodies", RigidBodyArray, optitrackCallback)
 
-
+take_off()
 rospy.spin()

@@ -11,11 +11,11 @@ import time
 # from mpl_toolkits import mplot3d
 
 g = 9.81
-r_drone = 0.1
+r_drone = 0.06
 r_ball = 0.25
 detect_radius = 2.5
 predict_time = 2.0
-time_step = 0.01
+time_step = 0.5
 safety_factor = 1.0
 
 prev_ball_location = [0.0,0.0,0.0]
@@ -87,9 +87,10 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     ball_y = ball_location[1]
     ball_z = ball_location[2]
 
-    curr_time = time.time()
-    dt = curr_time-last_time
-    last_time = curr_time
+    # curr_time = time.time()
+    # dt = curr_time-last_time
+    # last_time = curr_time
+    dt = 0.005
 
     ball_speed_x = (ball_x - prev_ball_location[0])/dt
     ball_speed_y = (ball_y - prev_ball_location[1])/dt
@@ -99,7 +100,7 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     prev_ball_location[1] = ball_y
     prev_ball_location[2] = ball_z
 
-    if distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z) >detect_radius:
+    if distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z) > detect_radius:
         last_reference = default_reference
         return default_reference
     

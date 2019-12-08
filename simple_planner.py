@@ -12,7 +12,7 @@ import time
 
 detect_distance = 2.0
 d_diff_threshold = -0.005
-movement = -1.2 # move to potitive x direction
+movement = 0.5 # move to potitive direction
 old_d = 0
 
 def distance(x1,y1,z1,x2,y2,z2):
@@ -40,6 +40,7 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     d_diff = d - old_d
     old_d = d
 
-    if d < detect_distance or d_diff < d_diff_threshold: 
-        return [default_reference[0],default_reference[1]+movement,default_reference[2]]
+    # if d < detect_distance or d_diff < d_diff_threshold: 
+    if d < detect_distance:     
+        return [default_reference[0]-movement,default_reference[1]+movement,default_reference[2]]
     else: return default_reference
