@@ -17,7 +17,7 @@ error_sum = [0.0,0.0,0.0]
 Hover_Speed = 33000.0
 
 Kp = [10.0,10.0,30000.0]
-Kd = [10.0,10.0,40000.0]
+Kd = [60.0,60.0,40000.0]
 Ki = [3.0,3.0,400.0]
 # Kp = [15.0,15.0,30000.0]
 # Kd = [55.0,55.0,40000.0]
@@ -42,12 +42,12 @@ def ControlOutput(desired_location,cflPose,dt):
 
 	x,y,z,roll,pitch,yaw = utility_function.GetPositionInfo(cflPose)
 
-	print("Position X = ", x)
-	print("Position Y = ", y)
-	print("Position Z = ", z)
-	print("Roll = ", roll/PI*180)
-	print("Pitch = ", pitch/PI*180)
-	print("Yaw = ", yaw/PI*180)
+	# print("Position X = ", x)
+	# print("Position Y = ", y)
+	# print("Position Z = ", z)
+	# print("Roll = ", roll/PI*180)
+	# print("Pitch = ", pitch/PI*180)
+	# print("Yaw = ", yaw/PI*180)
 
 	joyCommand_linear_x = 0.0
 	joyCommand_linear_y = 0.0
@@ -83,17 +83,17 @@ def ControlOutput(desired_location,cflPose,dt):
 	# joyCommand_linear_y = min(30,joyCommand_linear_y)
 	# joyCommand_linear_y = max(-30,joyCommand_linear_y)
 
-	joyCommand_linear_x = min(100,joyCommand_linear_x)
-	joyCommand_linear_x = max(-100,joyCommand_linear_x)
-	joyCommand_linear_y = min(100,joyCommand_linear_y)
-	joyCommand_linear_y = max(-100,joyCommand_linear_y)
+	joyCommand_linear_x = min(1000,joyCommand_linear_x)
+	joyCommand_linear_x = max(-1000,joyCommand_linear_x)
+	joyCommand_linear_y = min(1000,joyCommand_linear_y)
+	joyCommand_linear_y = max(-1000,joyCommand_linear_y)
 
 	joyCommand_linear_z = min(60000,joyCommand_linear_z)
 	#joyCommand_linear_z = max(Hover_Speed,joyCommand_linear_z)
 	joyCommand_linear_z = max(0,joyCommand_linear_z)
 
 
-	print("Error X: ",error[0]," Error Y: ",error[1]," Error Z: ",error[2])
-	print("Joy command X: ",joyCommand_linear_x," Joy command Y: ",joyCommand_linear_y," Joy command Z: ",joyCommand_linear_z)
+	# print("Error X: ",error[0]," Error Y: ",error[1]," Error Z: ",error[2])
+	# print("Joy command X: ",joyCommand_linear_x," Joy command Y: ",joyCommand_linear_y," Joy command Z: ",joyCommand_linear_z)
 
 	return [joyCommand_linear_x,joyCommand_linear_y,joyCommand_linear_z,joyCommand_angular_x,joyCommand_angular_y,joyCommand_angular_z]

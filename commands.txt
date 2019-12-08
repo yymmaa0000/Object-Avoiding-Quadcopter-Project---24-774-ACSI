@@ -30,3 +30,13 @@ quick but less stable
 Kp = [15.0,15.0,30000.0]
 Kd = [55.0,55.0,40000.0]
 Ki = [3.0,3.0,400.0]
+
+
+joyCommand_linear_x = min(1000,joyCommand_linear_x)
+joyCommand_linear_x = max(-1000,joyCommand_linear_x)
+joyCommand_linear_y = min(1000,joyCommand_linear_y)
+joyCommand_linear_y = max(-1000,joyCommand_linear_y)
+
+Kp = [11.0,11.0,30000.0]
+Kd = [60.0,60.0,40000.0]
+Ki = [3.0,3.0,400.0]
