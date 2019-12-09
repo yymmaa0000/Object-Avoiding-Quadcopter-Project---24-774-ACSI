@@ -80,72 +80,20 @@ def optitrackCallback(data):
 		return
 	else: Skip_this_time = True
 
-	# curr_time = time.time()
-	# if (curr_time-last_time) < dt: return
-	# last_time = curr_time
-
-
-	# if (time_passed() <= 4): 
-	# 	take_off()
-	# 	return
-
-
-
-	# elif (15 >= time_passed() >= 10):  desired_location  = desired_location2
-	# elif (20 >= time_passed() >= 15):  desired_location  = desired_location3
-	# elif (time_passed() >= 25): 
-	# 	land()
-	# 	return
-		
-	cflPose_drone = data.bodies[rigidBodyIdx_drone].pose
-	# cflPose_drone = data.bodies[2].pose
 	cflPose_obstacle = data.bodies[rigidBodyIdx_obstacle].pose
-	
-	print("=======================================================================================")
-	# if iii < 0: iii += 1
-	# else: 
-	# 	# print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-	# 	iii = 0
-	# 	desired_location = obstacle_avoidance_planner2.plan(cflPose_drone,cflPose_obstacle,default_reference)
-	# 	# desired_location = simple_planner.plan(cflPose_drone,cflPose_obstacle,default_reference)
-	drone_location = utility_function.GetPositionInfo(cflPose_drone)
-	drone_x = drone_location[0]
-	drone_y = drone_location[1]
-	drone_z = drone_location[2]
-	
 	ball_location = utility_function.GetPositionInfo(cflPose_obstacle)
 	ball_x = ball_location[0]
 	ball_y = ball_location[1]
 	ball_z = ball_location[2]
-
-	ball_speed_x = ball_x - prev_ball_location[0]
-	ball_speed_y = ball_y - prev_ball_location[1]
-	ball_speed_z = ball_z - prev_ball_location[2]
-
-	prev_ball_location[0] = ball_x
-	prev_ball_location[1] = ball_y
-	prev_ball_location[2] = ball_z
-
-	d = obstacle_avoidance_planner2.distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z)
-	d_diff = d - old_d
-	old_d = d
-
-	if d < 1.75: 
-		if d_diff < -0.005:
-			if desired_location[0] == default_reference[0] and desired_location[1] == default_reference[1] and desired_location[2] == default_reference[2]:
-				desired_location = obstacle_avoidance_planner2.dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x,ball_speed_y,ball_speed_z)
-	else: 
-		desired_location =  default_reference
-
-	print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
-	controller_output = Position_controller.ControlOutput(desired_location,cflPose_drone,dt)
+	print ball_x,ball_y,ball_z 
 	
-	joyCommand.linear.x = controller_output[0]
-	joyCommand.linear.y = controller_output[1]
-	joyCommand.linear.z = controller_output[2]
-	joyCommand.angular.x = controller_output[3]
-	joyCommand.angular.y = controller_output[4]
-	joyCommand.angular.z = controller_output[5]
+	
+	joyCommand.linear.x = 0
+	joyCommand.linear.y = 0
+	joyCommand.linear.z = 0
+	joyCommand.angular.x = 0
+	joyCommand.angular.y = 0
+	joyCommand.angular.z = 0
 	
 	pub.publish(joyCommand)
 	# rospy.loginfo("sent command")

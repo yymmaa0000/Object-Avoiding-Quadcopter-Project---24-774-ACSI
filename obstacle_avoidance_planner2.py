@@ -17,7 +17,7 @@ r_ball = 0.25
 detect_radius = 3.0
 predict_time = 2.0
 time_step = 0.5
-safety_factor = 4.0
+safety_factor = 3.0
 
 prev_ball_location = [0.0,0.0,0.0]
 last_reference = [0.0,0.0,0.0]
