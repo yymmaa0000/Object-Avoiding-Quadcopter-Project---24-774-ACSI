@@ -6,6 +6,7 @@ author: XingYu Wang
 """
 import utility_function
 import time
+import math
 # import numpy as np
 # import matplotlib.pyplot as plt
 # from mpl_toolkits import mplot3d
@@ -13,14 +14,15 @@ import time
 g = 9.81
 r_drone = 0.06
 r_ball = 0.25
-detect_radius = 2.5
+detect_radius = 3.0
 predict_time = 2.0
 time_step = 0.5
-safety_factor = 2.0
+safety_factor = 4.0
 
 prev_ball_location = [0.0,0.0,0.0]
 last_reference = [0.0,0.0,0.0]
 last_time = time.time()
+old_d = 0
 
 def distance(x1,y1,z1,x2,y2,z2):
     temp = (x1-x2)**2+(y1-y2)**2+(z1-z2)**2
@@ -41,10 +43,10 @@ def dodge2D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_spee
     
     perpendicular_norm = (perpendicular_x**2+perpendicular_y**2)**0.5
     
-    # dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * safety_factor
-    # dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * safety_factor
-    dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * 1
-    dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * 1
+    dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * safety_factor
+    dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * safety_factor
+    # dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * 1
+    # dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * 1
     
     return (drone_x+dx,drone_y+dy,drone_z)
 
@@ -66,12 +68,12 @@ def dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_spee
     
     perpendicular_norm = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
     
-    # dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * safety_factor
-    # dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * safety_factor
-    # dz = perpendicular_z / perpendicular_norm * (r_drone+r_ball) * safety_factor
-    dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * 1
-    dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * 1
-    dz = perpendicular_z / perpendicular_norm * (r_drone+r_ball) * 1
+    dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * safety_factor
+    dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * safety_factor
+    dz = perpendicular_z / perpendicular_norm * (r_drone+r_ball) * safety_factor
+    # dx = perpendicular_x / perpendicular_norm * (r_drone+r_ball) * 1
+    # dy = perpendicular_y / perpendicular_norm * (r_drone+r_ball) * 1
+    # dz = perpendicular_z / perpendicular_norm * (r_drone+r_ball) * 1
     
     return (drone_x+dx,drone_y+dy,drone_z+dz)
 
@@ -97,9 +99,9 @@ def project(v1_x,v1_y,v1_z,v2_x,v2_y,v2_z):
 # cflPose_obstacle = rigit body data of the obstacle from optitrack
 # default_reference = [x,y,z] default reference position when the drone is safe
 def plan(cflPose_drone,cflPose_obstacle,default_reference):
-    global last_time,last_reference,prev_ball_location
+    global last_time,last_reference,prev_ball_location, old_d
 
-    default_reference = [-0.709,1.755,0.653]
+    # default_reference = [-0.709,1.755,0.653]
 
     drone_location = utility_function.GetPositionInfo(cflPose_drone)
     drone_x = drone_location[0]
@@ -110,6 +112,7 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     ball_x = ball_location[0]
     ball_y = ball_location[1]
     ball_z = ball_location[2]
+    ball_z -= r_ball
 
     # curr_time = time.time()
     # dt = curr_time-last_time
@@ -118,49 +121,95 @@ def plan(cflPose_drone,cflPose_obstacle,default_reference):
     ball_speed_x = ball_x - prev_ball_location[0]
     ball_speed_y = ball_y - prev_ball_location[1]
     ball_speed_z = ball_z - prev_ball_location[2]
+    speed_norm = (ball_speed_x**2+ball_speed_y**2+ball_speed_z**2)**0.5
+    if speed_norm < 0.0001: return last_reference
+
+    # print("ball speed: ",speed_norm )
+    # if speed_norm > 0.000001:
+        # print("normalized speed vector: ",ball_speed_x/speed_norm,ball_speed_y/speed_norm,ball_speed_z/speed_norm )
 
     prev_ball_location[0] = ball_x
     prev_ball_location[1] = ball_y
     prev_ball_location[2] = ball_z
 
-    if (ball_speed_x**2+ball_speed_y**2+ball_speed_z**2)**0.5 < 0.001: 
-        last_reference = default_reference
-        return default_reference
+    # if speed_norm< 0.00001: 
+    #     last_reference = default_reference
+    #     return default_reference
 
-    if distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z) > detect_radius:
-        last_reference = default_reference
-        return default_reference
+    d = distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z)
+    d_diff = d - old_d
+    old_d = d
 
-    # calculate drone's distance to ball's speed vector
-    position_vector_x= drone_x-ball_x
-    position_vector_y= drone_y-ball_y
-    position_vector_z= drone_z-ball_z
+    # if d < detect_radius or d_diff< -0.0001: 
+    #     if last_reference[0] == default_reference[0] and last_reference[1] == default_reference[1] and last_reference[2] == default_reference[2]:
+    #         last_reference = dodge2D(drone_x,drone_y,default_reference[2],ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
+    #         last_reference = new_reference
+    #     return last_reference
+    # elif d >= 2.0: 
+    #     last_reference = default_reference
+    #     return default_reference
+    # else: return last_reference
 
-    projection,perpendicular_x,perpendicular_y,perpendicular_z = project(ball_speed_x,
-        ball_speed_y,ball_speed_z,position_vector_x,position_vector_y,position_vector_z)
+    if d < 2.0 or d_diff < -0.005: return [-1.2,0.0,0.7]
+    else: return default_reference
+
+    # # calculate drone's distance to ball's speed vector
+    # position_vector_x= drone_x-ball_x
+    # position_vector_y= drone_y-ball_y
+    # position_vector_z= drone_z-ball_z
+    # posistion_norm = (position_vector_x**2+position_vector_y**2+position_vector_z**2)**0.5
+
+    # projection,perpendicular_x,perpendicular_y,perpendicular_z = project(ball_speed_x,
+    #     ball_speed_y,ball_speed_z,position_vector_x,position_vector_y,position_vector_z)
     
-    print("projection: ", projection)
-
-    if projection < 0: 
-        last_reference = default_reference
-        return default_reference
-
-    distance_to_speed_vector = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
-    print("distance_to_speed_vector: ", distance_to_speed_vector)
-
-    if distance_to_speed_vector <= (r_drone+r_ball)*safety_factor:
-        position_vector_x= last_reference[0]-ball_x
-        position_vector_y= last_reference[1]-ball_y
-        position_vector_z= last_reference[2]-ball_z
-        _,perpendicular_x,perpendicular_y,perpendicular_z = project(ball_speed_x,ball_speed_y,ball_speed_z,position_vector_x,position_vector_y,position_vector_z)
-        last_reference_distance = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
-
-        if last_reference_distance  <= (r_drone+r_ball)*safety_factor:
-            new_reference = dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
-            last_reference = new_reference
-            # print("*************************************************new reference :", new_reference)
-            return new_reference
-        else: return last_reference
+    # # print("projection: ", projection)
     
-    last_reference = default_reference
-    return default_reference
+    # if projection < 0: 
+    #     last_reference = default_reference
+    #     return default_reference
+
+    # angle = math.acos(projection/posistion_norm) / 3.1415926*180
+    # # print("angle: ",angle)
+
+    # distance_to_speed_vector = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
+    # # print("distance_to_speed_vector: ", distance_to_speed_vector)
+
+    # if angle <= 30:
+    #     if last_reference[0] == default_reference[0] and last_reference[1] == default_reference[1] and last_reference[2] == default_reference[2]:
+    #         # new_reference = dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
+    #         new_reference = dodge2D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
+    #         # new_reference[2] = default_reference[2]
+    #         last_reference = new_reference
+    #         # print("*************************************************new reference :", new_reference)
+    #         return new_reference
+    # return last_reference
+
+
+
+
+    # if projection < 0: 
+    #     last_reference = default_reference
+    #     return default_reference
+
+    # distance_to_speed_vector = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
+    # # print("distance_to_speed_vector: ", distance_to_speed_vector)
+
+    # if distance_to_speed_vector <= (r_drone+r_ball)*safety_factor:
+    #     position_vector_x= last_reference[0]-ball_x
+    #     position_vector_y= last_reference[1]-ball_y
+    #     position_vector_z= last_reference[2]-ball_z
+    #     _,perpendicular_x,perpendicular_y,perpendicular_z = project(ball_speed_x,ball_speed_y,ball_speed_z,position_vector_x,position_vector_y,position_vector_z)
+    #     last_reference_distance = (perpendicular_x**2+perpendicular_y**2+perpendicular_z**2)**0.5
+
+    #     if last_reference_distance  <= (r_drone+r_ball)*safety_factor:
+    #         # new_reference = dodge3D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
+    #         new_reference = dodge2D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x, ball_speed_y,ball_speed_z)
+    #         # new_reference[2] = default_reference[2]
+    #         last_reference = new_reference
+    #         # print("*************************************************new reference :", new_reference)
+    #         return new_reference
+    #     else: return last_reference
+    
+    # # last_reference = default_reference
+    # # return default_reference
+    # return last_reference
