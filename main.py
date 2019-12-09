@@ -25,8 +25,11 @@ import utility_function
 default_reference = [0.0,0.0,0.7]#x,y,z
 desired_location = default_reference
 
-desired_location2 = [-1.0,1.0,1.5] #x,y,z
-desired_location3 = [0.0,1.3,0.3] #x,y,z
+# desired_location2 = [-1.0,1.0,1.5] #x,y,z
+# desired_location3 = [0.0,1.3,0.3] #x,y,z
+
+prev_ball_location = [0.0,0.0,0.0]
+last_reference = desired_location
 
 start_time = time.time()
 last_time = time.time()
@@ -39,8 +42,6 @@ dt = 1.0 / frequency
 rigidBodyIdx_drone = 0
 rigidBodyIdx_obstacle = 1
 old_d = 0
-
-iii = 0
 
 def time_passed():
 	return time.time()-start_time
@@ -72,7 +73,7 @@ def land():
 
 
 def optitrackCallback(data):
-	global pub, joyCommand, rate, Skip_this_time,desired_location, last_time, iii, old_d
+	global pub, joyCommand, rate, Skip_this_time,desired_location, last_time, old_d,prev_ball_location
 
 	if Skip_this_time:
 		Skip_this_time = False
@@ -117,12 +118,23 @@ def optitrackCallback(data):
 	ball_y = ball_location[1]
 	ball_z = ball_location[2]
 
+	ball_speed_x = ball_x - prev_ball_location[0]
+    ball_speed_y = ball_y - prev_ball_location[1]
+    ball_speed_z = ball_z - prev_ball_location[2]
+
+    prev_ball_location[0] = ball_x
+    prev_ball_location[1] = ball_y
+    prev_ball_location[2] = ball_z
+
 	d = obstacle_avoidance_planner2.distance(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z)
 	d_diff = d - old_d
 	old_d = d
 
-	if d < 2.0 or d_diff < -0.005: desired_location = [-1.2,0.0,0.7]
-	else: desired_location =  default_reference
+	if d < 2.0 or d_diff < -0.005: 
+		if desired_location[0] == default_reference[0] and desired_location[1] == default_reference[1] and desired_location[2] == default_reference[2]:
+			desired_location = obstacle_avoidance_planner2.dodge2D(drone_x,drone_y,drone_z,ball_x,ball_y,ball_z,ball_speed_x,ball_speed_y,ball_speed_z)
+	else: 
+		desired_location =  default_reference
 
 	print("Reference location: ",desired_location[0],desired_location[1],desired_location[2])
 	controller_output = Position_controller.ControlOutput(desired_location,cflPose_drone,dt)
