@@ -8,6 +8,7 @@ The original repository for this workspace can be found [here](https://github.co
 
 ### project_code
 This folder contains all the code we developed for controller, planner, communication, and simulation.
+The project report can be viewed [here](https://github.com/yymmaa0000/Object-Avoiding-Quadcopter-Project---24-774-ACSI/blob/master/24_774_Advanced_Control_System_Integration_Final_Project.pdf).
 
-
-![alt text](https://github.com/yymmaa0000/Scotty3D/blob/master/result/Pathtracer/Task%206/CBdragon_Task6.png)
+The project videos can be viewed in the following YouTube playlist:
+https://www.youtube.com/playlist?list=PLejBgh4PSucLqI6gG4lg_6wGPFEpSn489
